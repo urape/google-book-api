@@ -95,4 +95,14 @@ class SearchController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * 検索履歴取得
+     * 上位10件
+     */
+    public function search_history(): JsonResponse
+    {
+        $searchHistory = SearchHistory::latest()->limit(10)->get();
+        return response()->json($searchHistory);
+    }
 }

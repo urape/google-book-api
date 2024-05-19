@@ -13,6 +13,7 @@ Google Book Api
     </div>
 </form>
 
+<div id="searchHistoryList"></div>
 <h2>検索結果</h2>
 <div id="results"></div>
 <div id="error" class="alert alert-danger" style="display: none;"></div>
@@ -20,4 +21,5 @@ Google Book Api
 
 @section('js')
 <script src="{{ asset('js/search.js') }}"></script>
+<script src="{{ asset('js/search_history.js') }}"></script>
 @endsection

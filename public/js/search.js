@@ -13,6 +13,7 @@ $(document).ready(function () {
             $("#error").hide();
         }
 
+        // google book apiのレスポンス結果を表示する
         $.ajax({
             url: "/search",
             method: "POST",
