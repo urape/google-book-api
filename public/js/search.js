@@ -3,6 +3,16 @@ $(document).ready(function () {
     $("#searchForm").on("submit", function (e) {
         e.preventDefault();
         const keyword = $("#keyword").val();
+
+        // キーワードが空の場合、エラーメッセージを表示する
+        if (!keyword) {
+            $("#error").text("検索キーワードを入力してください。").show();
+            $("#results").html("");
+            return;
+        } else {
+            $("#error").hide();
+        }
+
         $.ajax({
             url: "/search",
             method: "POST",

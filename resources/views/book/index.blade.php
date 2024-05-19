@@ -15,6 +15,7 @@ Google Book Api
 
 <h2>検索結果</h2>
 <div id="results"></div>
+<div id="error" class="alert alert-danger" style="display: none;"></div>
 @endsection
 
 @section('js')

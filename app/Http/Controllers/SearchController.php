@@ -8,20 +8,32 @@ use Carbon\Carbon;
 use Http;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\View\View;
 
 class SearchController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         return view('book/index');
     }
 
+    /**
+     * Google Books Api 検索処理
+     */
     public function search(Request $request): JsonResponse
     {
         $keyword = $request->input('keyword');
+
+        // キーワードがない場合はエラー
+        if (empty($keyword)) {
+            return response()->json([
+                'error' => '検索キーワードを入力してください。'
+            ], 400);
+        }
+
         // Google Books Api にリクエスト送信
         $response = Http::get('https://www.googleapis.com/books/v1/volumes', [
-            'q' => $keyword,
+            'q' => 'intitle:' . $keyword,
             'maxResults' => 30
         ]);
 
