@@ -41,6 +41,10 @@ $(document).ready(function () {
                 });
                 $("#results").html(results);
             },
+            error: function (xhr) {
+                $("#error").text(xhr.responseJSON.error).show();
+                $("#results").html("");
+            },
         });
     });
 });
