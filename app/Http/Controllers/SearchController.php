@@ -19,7 +19,8 @@ class SearchController extends Controller
     }
 
     /**
-     * Google Books Api 検索処理
+     * 検索
+     * Google Books Api を使用し書籍データを取得する
      */
     public function search(Request $request): JsonResponse
     {
@@ -55,15 +56,12 @@ class SearchController extends Controller
                 'searched_at' => Carbon::now(),
             ]);
 
-            // 画面表示用
             $books = [];
-            // 検索履歴用
-            $books_history = [];
-            $history_index = 1;
+            $result_index = 0;
             foreach ($books_data as $book_data) {
                 $volume_info = $book_data['volumeInfo'];
-                // データが存在しない場合は''とする
                 $book = [
+                    'search_history_id' => $search_history->id,
                     'title' => $volume_info['title'] ?? '',
                     'authors' => isset($volume_info['authors']) ? implode(', ', $volume_info['authors']) : '',
                     'description' => $volume_info['description'] ?? '',
@@ -71,17 +69,16 @@ class SearchController extends Controller
                     'small_thumbnail' => $volume_info['imageLinks']['smallThumbnail'] ?? '',
                 ];
 
-                // 上位10件を履歴として保存
-                if ($history_index < 10) {
-                    $book['search_history_id'] = $search_history->id;
-                    $books_history[] = $book;
+                // 検索結果10件を登録する
+                if ($result_index < 10) {
+                    SearchResult::create($book);
+                    $result_index++;
                 }
 
                 // 画面表示用に書籍データを追加する
                 $books[] = $book;
             }
 
-            SearchResult::insert($books_history);
             DB::commit();
 
             // 書籍データをjson形式で返す
@@ -98,11 +95,21 @@ class SearchController extends Controller
 
     /**
      * 検索履歴取得
-     * 上位10件
      */
     public function search_history(): JsonResponse
     {
-        $searchHistory = SearchHistory::latest()->limit(10)->get();
-        return response()->json($searchHistory);
+        // 件数が多いと見づらいので5件とする
+        $search_history = SearchHistory::latest()->limit(5)->get();
+        return response()->json($search_history);
+    }
+
+    /**
+     * 検索結果表示
+     * 検索履歴に紐づく検索結果を表示する
+     */
+    public function show_search_result($id): JsonResponse
+    {
+        $search_history = SearchHistory::with('search_results')->find($id);
+        return response()->json($search_history);
     }
 }

@@ -13,6 +13,9 @@ $(document).ready(function () {
             $("#error").hide();
         }
 
+        $("#searchResult").show();
+        $("#storeResult").hide();
+
         // google book apiのレスポンス結果を表示する
         $.ajax({
             url: "/search",
